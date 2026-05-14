@@ -1,0 +1,57 @@
+# Pointer-CAD training configuration.
+# Keep paths project-relative (or use mounted paths in your own environment).
+
+model:
+  # Hugging Face base model ID.
+  base_model: "Qwen/Qwen2.5-0.5B-Instruct"
+  # Quantization bits for CAD value tokens.
+  bit: 8
+
+dataset:
+  # Dataset root directory.
+  dataset_dir: "./data/pointercad/dataset"
+  # Split file containing train/validation/test IDs.
+  split_filepath: "./data/pointercad/train_val_test.json"
+  # Maximum tokenizer sequence length.
+  max_seq_len: 3072
+  # Prompt templates to sample during training.
+  prompt:
+    - abs
+    - exp
+
+train:
+  # Optimizer settings.
+  lr: 1.0e-4
+  tau_lr: 1.0e-5
+  weight_decay: 0.01
+
+  # Training loop settings.
+  batch_size: 9
+  gradient_accumulation_steps: 2
+  num_epochs: 10
+
+  # Data loading settings.
+  num_workers: 4
+  prefetch_factor: 16
+
+  # Logging/checkpoint settings.
+  log_dir: "./log"
+  checkpoint_overwrite: true
+  # Checkpoint file used to resume training state (model/optimizer/scheduler).
+  checkpoint_path: null
+  # If true, still start from epoch 0 even when checkpoint_path is provided.
+  force_retrain: true
+  checkpoint_interval: 1
+
+criterion:
+  # Loss weights.
+  weights:
+    value: 0.5
+    pointer: 0.5
+    scale: 0.01
+
+val:
+  # Validation frequency and size.
+  val_batch: 10
+  interval: 5
+  batch_size: 16

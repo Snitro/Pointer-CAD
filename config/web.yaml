@@ -1,0 +1,12 @@
+# Pointer-CAD web demo configuration.
+# Set web.checkpoint_path before launching web.py.
+
+model:
+  # Hugging Face base model ID.
+  base_model: "Qwen/Qwen2.5-0.5B-Instruct"
+
+web:
+  # Directory for demo logs and generated artifacts.
+  log_dir: "./log"
+  # Path to a trained checkpoint (.pth).
+  checkpoint_path: null

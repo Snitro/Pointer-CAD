@@ -1,0 +1,30 @@
+# Pointer-CAD evaluation configuration.
+# Set test.checkpoint_path before running test.py.
+
+model:
+  # Hugging Face base model ID.
+  base_model: "Qwen/Qwen2.5-0.5B-Instruct"
+  # Quantization bits for CAD value tokens.
+  bit: 8
+
+dataset:
+  # Dataset root directory.
+  dataset_dir: "./data/pointercad/dataset"
+  # Split file containing train/validation/test IDs.
+  split_filepath: "./data/pointercad/train_val_test.json"
+  # Maximum tokenizer sequence length.
+  max_seq_len: 3072
+  # Prompt templates used during evaluation.
+  prompt:
+    - exp
+
+test:
+  # Data loading settings.
+  num_workers: 4
+  batch_size: 1
+  prefetch_factor: 16
+
+  # Checkpoint and output settings.
+  checkpoint_path: null
+  log_dir: "./log"
+  save_stl: true

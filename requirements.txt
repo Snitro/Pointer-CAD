@@ -1,0 +1,16 @@
+--extra-index-url https://download.pytorch.org/whl/cu124
+--find-links https://data.dgl.ai/wheels/torch-2.6/cu124/repo.html
+
+torch==2.12.0
+torchvision==0.27.0
+transformers==5.8.1
+peft==0.19.1
+accelerate==1.13.0
+dgl==2.5.0+cu124
+loguru==0.7.3
+wandb==0.27.0
+tqdm==4.67.3
+trimesh==4.12.2
+pyyaml==6.0.3
+requests==2.34.1
+opencv-python-headless==4.13.0.92
