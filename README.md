@@ -54,8 +54,8 @@ Updated intermediate B-Rep solid
 
 - Linux
 - NVIDIA GPU + CUDA CuDNN
-- Python 3.10+, PyTorch 2.12+
-- Conda (recommended)
+- Python 3.9, PyTorch 2.4
+- Conda
 
 
 ## Repository structure
@@ -73,40 +73,76 @@ Pointer-CAD-dev/
 
 ---
 
-## Installation
+## Environment Setup
 
-Install python package dependencies through pip:
+This project is tested with the following environment. We recommend using **Conda** to manage dependencies.
 
-```bash
-pip install -r requirements.txt
-```
+### 1. Create Conda Environment
 
-Install the attention kernel (required for default `flash_attention_2` mode; compiles CUDA kernels):
+Create a new Conda environment named `PointerCAD`:
 
 ```bash
-pip install flash-attn --no-build-isolation
-```
+conda create -n PointerCAD python=3.9
+conda activate PointerCAD
+````
 
-Install CAD geometry packages via conda:
+### 2. Install Core Dependencies
 
-```bash
-conda install -c conda-forge pythonocc-core occwl
-```
-
-> **Note**: `occwl 3.0.0` is incompatible with `pythonocc-core 7.9.x` out of the box. Apply this patch after install:
-> ```bash
-> python -c "import site,pathlib; f=pathlib.Path(site.getsitepackages()[0])/'occwl/compound.py'; f.write_text(f.read_text().replace('import read_step_file, list_of_shapes_to_compound','import read_step_file\nfrom OCC.Core.BRep import BRep_Builder\ndef list_of_shapes_to_compound(s):\n from OCC.Core.TopoDS import TopoDS_Compound;c=TopoDS_Compound();b=BRep_Builder();b.MakeCompound(c);[b.Add(c,x) for x in s];return c,True'))"
-> ```
-
-Download the base model weights from Hugging Face (set in `config/train.yaml`):
+Install CAD-related libraries and Python dependencies:
 
 ```bash
-# Default (fast, for debugging)
-huggingface-cli download Qwen/Qwen2.5-0.5B-Instruct
-
-# Full model (recommended for real training)
-huggingface-cli download Qwen/Qwen2.5-7B-Instruct
+conda install pythonocc-core=7.7.0 loguru trimesh simpleeval scikit-learn -c conda-forge
 ```
+
+### 3. Install PyTorch with CUDA Support
+
+The project uses PyTorch 2.4.1 with CUDA 12.4 support:
+
+```bash
+conda install pytorch==2.4.1 torchvision==0.19.1 torchaudio==2.4.1 pytorch-cuda=12.4 -c pytorch -c nvidia
+```
+
+### 4. Install Transformer and Graph Learning Dependencies
+
+Install HuggingFace Transformers, PEFT, and DGL:
+
+```bash
+conda install transformers=4.51.3 peft=0.15.2 -c conda-forge
+
+conda install -c dglteam/label/th24_cu124 dgl
+```
+
+### 5. Install pip Dependencies
+
+Install `occwl` and additional Python packages:
+
+```bash
+pip install git+https://github.com/AutodeskAILab/occwl.git
+
+pip install deprecate==1.0.5
+pip install opencv-python
+pip install wandb
+```
+
+### 6. Install FlashAttention
+
+This project requires FlashAttention 2.7.4.
+
+Instead of compiling from source, you can directly install the pre-built wheel:
+
+```bash
+pip install https://github.com/Dao-AILab/flash-attention/releases/download/v2.7.4.post1/flash_attn-2.7.4.post1+cu12torch2.4cxx11abiFALSE-cp39-cp39-linux_x86_64.whl
+```
+
+The wheel above is built for:
+
+* Python: 3.9
+* PyTorch: 2.4.x
+* CUDA: 12.x
+* Linux x86_64
+
+If your CUDA/PyTorch/Python versions are different, please install FlashAttention from source following the official instructions:
+[https://github.com/Dao-AILab/flash-attention](https://github.com/Dao-AILab/flash-attention)
 
 ---
 
