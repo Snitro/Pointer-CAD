@@ -57,6 +57,8 @@ Updated intermediate B-Rep solid
 - Python 3.9, PyTorch 2.4
 - Conda
 
+---
+
 
 ## Repository structure
 
@@ -84,7 +86,7 @@ Create a new Conda environment named `PointerCAD`:
 ```bash
 conda create -n PointerCAD python=3.9
 conda activate PointerCAD
-````
+```
 
 ### 2. Install Core Dependencies
 
@@ -165,7 +167,7 @@ data/pointercad/
 │   ├── 0001/
 │   └── ...
 └── train_val_test.json
-````
+```
 
 ---
 
@@ -257,10 +259,11 @@ python preprocessing/json2stl.py --input_dir ./data/raw_json --output_dir ./expo
 ## Citation
 
 ```bibtex
-@inproceedings{pointercad2026,
-  title     = {Pointer-CAD: Unifying B-Rep and Command Sequences via Pointer-based Edges \& Faces Selection},
-  author    = {Dacheng Qi and Chenyu Wang and Jingwei Xu and Tianzhe Chu and Zibo Zhao and Wen Liu and Wenrui Ding and Yi Ma and Shenghua Gao},
-  booktitle = {CVPR},
-  year      = {2026}
+@inproceedings{qi2026pointer,
+  title={Pointer-cad: Unifying b-rep and command sequences via pointer-based edges \& faces selection},
+  author={Qi, Dacheng and Wang, Chenyu and Xu, Jingwei and Chu, Tianzhe and Zhao, Zibo and Liu, Wen and Ding, Wenrui and Ma, Yi and Gao, Shenghua},
+  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+  pages={17377--17387},
+  year={2026}
 }
 ```
