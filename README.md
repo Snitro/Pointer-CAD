@@ -77,7 +77,7 @@ Pointer-CAD-dev/
 
 ## Environment Setup
 
-This project is tested with the following environment. We recommend using **Conda** to manage dependencies.
+This project was developed and tested under the following environment. We recommend using **Conda** to manage dependencies.
 
 ### 1. Create Conda Environment
 
