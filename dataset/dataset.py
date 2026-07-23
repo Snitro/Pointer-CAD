@@ -15,31 +15,6 @@ from misc import STANDARD_PLANES, TOKEN
 from cadmodel.model import convert_json_from_deepcad
 
 
-class GroupedDistributedSampler(DistributedSampler):
-    def __init__(self, dataset, group_size=1, **kwargs):
-        world_size = dist.get_world_size()
-        rank = dist.get_rank()
-
-        assert (
-            world_size % group_size == 0
-        ), "World size must be divisible by group_size"
-
-        # Map rank to a shared virtual rank within each group.
-        group_id = rank // group_size
-        fake_rank = group_id
-        fake_world_size = world_size // group_size
-
-        # Build the base class with group-level rank/world_size.
-        super().__init__(
-            dataset, num_replicas=fake_world_size, rank=fake_rank, **kwargs
-        )
-
-        # Keep real rank/group info for possible downstream use.
-        self.real_rank = rank
-        self.group_id = group_id
-        self.group_size = group_size
-
-
 class PointerCADDataset(Dataset):
     def __init__(
         self,
@@ -465,7 +440,6 @@ def get_dataloaders(
     split_filepath: str,
     subsets: list[str],
     batch_sizes,
-    group_sizes=1,
     augment: bool = True,
     shuffle: bool = True,
     pin_memory: bool = False,
@@ -481,7 +455,6 @@ def get_dataloaders(
         split_filepath (str): Split JSON path.
         subsets (list[str]): Subsets to load.
         batch_sizes (int | list[int]): Batch size(s) per subset.
-        group_sizes (int | list[int]): Distributed group size(s) per subset.
         augment (bool): Whether to apply augmentation in dataset.
         shuffle (bool): Whether to shuffle each subset.
         pin_memory (bool): DataLoader pin_memory option.
@@ -497,8 +470,6 @@ def get_dataloaders(
 
     if isinstance(batch_sizes, int):
         batch_sizes = [batch_sizes] * len(subsets)
-    if isinstance(group_sizes, int):
-        group_sizes = [group_sizes] * len(subsets)
 
     try:
         cpu_count = len(os.sched_getaffinity(0))
@@ -509,7 +480,7 @@ def get_dataloaders(
             f"num_workers ({num_workers}) is greater than the number of CPU cores ({cpu_count}). This may cause performance issues."
         )
 
-    for subset, batch_size, group_size in zip(subsets, batch_sizes, group_sizes):
+    for subset, batch_size in zip(subsets, batch_sizes):
         dataset = PointerCADDataset(
             dataset_dir=dataset_dir,
             split_filepath=split_filepath,
@@ -519,9 +490,7 @@ def get_dataloaders(
         )
 
         train_sampler = (
-            GroupedDistributedSampler(
-                dataset, group_size=group_size, shuffle=shuffle, drop_last=True
-            )
+            DistributedSampler(dataset, shuffle=shuffle, drop_last=True)
             if dist.is_initialized()
             else None
         )
