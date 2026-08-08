@@ -1,16 +1,11 @@
-import pandas as pd
-import statistics
-import os, sys
+import os
+import json
 import argparse
+import statistics
+from collections import Counter
 
-sys.path.append("..")
-sys.path.append("/".join(os.path.abspath(__file__).split("/")[:-2]))
-from tqdm import tqdm
-import traceback
 from rich import print
 from loguru import logger
-import json
-from collections import Counter
 
 
 def main():
